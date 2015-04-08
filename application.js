@@ -1,4 +1,6 @@
 var ContainershipPlugin = require("containership.plugin");
+var leader = require([__dirname, "lib", "leader"].join("/"));
+var follower = require([__dirname, "lib", "follower"].join("/"));
 
 module.exports = new ContainershipPlugin({
     type: "core",
