@@ -4,6 +4,7 @@ var follower = require([__dirname, "lib", "follower"].join("/"));
 
 module.exports = new ContainershipPlugin({
     type: "core",
+    name: "cloud",
 
     initialize: function(core){
         core.logger.register("containership-cloud");
