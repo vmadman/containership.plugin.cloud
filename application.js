@@ -9,9 +9,9 @@ module.exports = new ContainershipPlugin({
         core.logger.register("containership-cloud");
 
         if(core.options.mode == "leader")
-            leader.initialize(core);
+            leader.initialize(core, this.config);
         else
-            follower.initialize(core);
+            follower.initialize(core, this.config);
     },
 
     reload: function(){}
