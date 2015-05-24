@@ -74,8 +74,8 @@ var cloud = {
 
             return _.map(ip_addresses, function(ip_address){
                 ip_address = [ip_address, "32"].join("/");
-                return ["--cidr", ip_address].join(" ");
-            }).join(" ");
+                return ip_address;
+            }).join(",");
         }
     },
 
@@ -90,7 +90,7 @@ var cloud = {
                     });
 
                     ip_address = [ip_address, "32"].join("/");
-                    return ["--cidr", ip_address].join(" ");
+                    return ip_address;
                 }),
                 _.map(configuration.followers.instances, function(instance){
                     var ip_address = null;
@@ -100,9 +100,9 @@ var cloud = {
                     });
 
                     ip_address = [ip_address, "32"].join("/");
-                    return ["--cidr", ip_address].join(" ");
+                    return ip_address;
                 })
-            ]).join(" ");
+            ]).join(",");
         }
     },
 
@@ -112,14 +112,14 @@ var cloud = {
                 _.map(configuration.leaders.instances, function(instance){
                     var ip_address = _.without(instance.ips, instance.primaryIp);
                     ip_address = [ip_address, "32"].join("/");
-                    return ["--cidr", ip_address].join(" ");
+                    return ip_address;
                 }),
                 _.map(configuration.followers.instances, function(instance){
                     var ip_address = _.without(instance.ips, instance.primaryIp);
                     ip_address = [ip_address, "32"].join("/");
-                    return ["--cidr", ip_address].join(" ");
+                    return ip_address;
                 })
-            ]).join(" ");
+            ]).join(",");
         }
     }
 
