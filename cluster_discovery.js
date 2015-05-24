@@ -81,8 +81,11 @@ var cloud = {
 
     do: {
         parse: function(configuration){
-            return _.flatten([
+            var ip_addresses = _.flatten([
                 _.map(configuration.leaders.instances, function(instance){
+                    if(_.isNull(instance))
+                        return;
+
                     var ip_address = null;
                     _.each(instance.networks.v4, function(network){
                         if(network.type == "private")
@@ -93,6 +96,9 @@ var cloud = {
                     return ip_address;
                 }),
                 _.map(configuration.followers.instances, function(instance){
+                    if(_.isNull(instance))
+                        return;
+
                     var ip_address = null;
                     _.each(instance.networks.v4, function(network){
                         if(network.type == "private")
@@ -102,7 +108,9 @@ var cloud = {
                     ip_address = [ip_address, "32"].join("/");
                     return ip_address;
                 })
-            ]).join(",");
+            ]);
+
+            return _.compact(ip_addresses).join(",");
         }
     },
 
