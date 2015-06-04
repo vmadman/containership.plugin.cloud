@@ -129,6 +129,27 @@ var cloud = {
                 })
             ]).join(",");
         }
+    },
+
+    pkt: {
+        parse: function(configuration){
+            return _.flatten([
+                _.map(configuration.leaders.instances, function(instance){
+                    var ip_address = _.find(instance.ip_addresses, function(ip){
+                        return !ip.public;
+                    });
+                    ip_address = [ip_address.address, "32"].join("/");
+                    return ip_address;
+                }),
+                _.map(configuration.followers.instances, function(instance){
+                    var ip_address = _.find(instance.ip_addresses, function(ip){
+                        return !ip.public;
+                    });
+                    ip_address = [ip_address.address, "32"].join("/");
+                    return ip_address;
+                })
+            ]).join(",");
+        }
     }
 
 }
