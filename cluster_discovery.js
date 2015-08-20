@@ -150,6 +150,19 @@ var cloud = {
                 })
             ]).join(",");
         }
+    },
+
+    rsp: {
+        parse: function(configuration){
+            return _.flatten([
+                _.map(configuration.leaders.instances, function(instance){
+                    return [instance.accessIPv4, "32"].join("/");
+                }),
+                _.map(configuration.followers.instances, function(instance){
+                    return [instance.accessIPv4, "32"].join("/");
+                })
+            ]).join(",");
+        }
     }
 
 }
