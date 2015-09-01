@@ -16,7 +16,7 @@ fs.readFile([process.env.HOME, ".containership", "cloud.json"].join("/"), functi
         process.exit(1);
     }
 
-    fs.readFile(["", "tmp", "containership.snapshot"].join("/"), function(err, content){
+    fs.readFile(["", "tmp", "cluster_id"].join("/"), function(err, content){
         if(err)
             process.exit(1);
 
