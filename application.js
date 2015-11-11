@@ -9,8 +9,8 @@ module.exports = new ContainershipPlugin({
     type: ["core", "cli"],
     name: "cloud",
 
-    initialize: function(options){
-        if(_.has(options, "logger")){
+    initialize: function(core){
+        if(_.has(core, "logger")){
             core.logger.register("containership-cloud");
 
             if(core.options.mode == "leader")
