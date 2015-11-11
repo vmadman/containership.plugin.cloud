@@ -26,3 +26,4 @@ node_modules
 
 # Vagrant
 Vagrantfile
+.vagrant
