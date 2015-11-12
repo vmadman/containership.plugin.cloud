@@ -13,10 +13,12 @@ module.exports = new ContainershipPlugin({
         if(_.has(core, "logger")){
             core.logger.register("containership-cloud");
 
+            var config = this.get_config("core");
+
             if(core.options.mode == "leader")
-                leader.initialize(core, this.config);
+                leader.initialize(core, config);
             else
-                follower.initialize(core, this.config);
+                follower.initialize(core, config);
         }
         else{
             _.each(cli, function(configuration, command){
