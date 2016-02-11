@@ -45,8 +45,7 @@ module.exports = new ContainershipPlugin({
                             options.method = "POST";
 
                             options.headers = _.pick(options.headers, [
-                                "x-containership-cloud-email",
-                                "x-containership-cloud-token",
+                                "authorization"
                             ]);
 
                             var original_qs = options.qs;
