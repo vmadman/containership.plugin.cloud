@@ -45,8 +45,7 @@ var containership_cloud = {
             method: "GET",
             timeout: 10000,
             headers: {
-                "X-ContainerShip-Cloud-API-Key": config.api_key,
-                "X-ContainerShip-Cloud-Organization": config.organization
+                Authorization: ["Bearer", config.api_key].join(" ")
             },
             json: true
         }
