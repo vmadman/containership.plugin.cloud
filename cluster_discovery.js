@@ -41,7 +41,7 @@ var containership_cloud = {
 
     get_configuration: function(config, fn){
         var options = {
-            url: ["https://api.containership.io", "v1", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
+            url: ["https://api.containership.io", "v2", "organizations", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
             method: "GET",
             timeout: 10000,
             headers: {
