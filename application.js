@@ -34,7 +34,7 @@ module.exports = new ContainershipPlugin({
                             var original_url = options.url;
                             options.url = [
                                 "https://api.containership.io",
-                                "v1",
+                                "v2",
                                 options.headers["x-containership-cloud-organization"],
                                 "clusters",
                                 options.headers["x-containership-cloud-cluster"],
