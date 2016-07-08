@@ -22,12 +22,13 @@ module.exports = new ContainershipPlugin({
                 follower.initialize(core, config);
         }
         else{
-            _.each(cli, function(configuration, command){
-                nomnom.command(command).options(configuration.options).callback(configuration.init)
+            var commands = _.map(cli, function(configuration, command){
+                configuration.name = command;
+                return configuration;
             });
 
             return {
-                nomnom: nomnom,
+                commands: commands,
                 middleware: [
                     function(options, fn){
                         if(options.url.indexOf("https://api.containership.io") == 0){
