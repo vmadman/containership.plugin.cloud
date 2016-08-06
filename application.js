@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var ContainershipPlugin = require("containership.plugin");
 var cli = require([__dirname, "lib", "cli"].join("/"));
+var cluster_discovery = require([__dirname, "cluster_discovery"].join("/"));
 var leader = require([__dirname, "lib", "leader"].join("/"));
 var follower = require([__dirname, "lib", "follower"].join("/"));
 var nomnom = require("nomnom");
@@ -16,10 +17,17 @@ module.exports = new ContainershipPlugin({
 
             var config = this.get_config("core");
 
-            if(core.options.mode == "leader")
-                leader.initialize(core, config);
-            else
-                follower.initialize(core, config);
+            cluster_discovery.discover(function(err, cidr) {
+                if(!err) {
+                    core.cluster.legiond.options.network.cidr = cidr;
+                }
+
+                if (core.options.mode === "leader") {
+                    leader.initialize(core, config);
+                } else {
+                    follower.initialize(core, config);
+                }
+            });
         }
         else{
             var commands = _.map(cli, function(configuration, command){
