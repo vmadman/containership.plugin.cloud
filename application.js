@@ -20,6 +20,7 @@ module.exports = new ContainershipPlugin({
             cluster_discovery.discover(function(err, cidr) {
                 if(!err) {
                     core.cluster.legiond.options.network.cidr = cidr;
+                    core.cluster.legiond.actions.discover_peers(cidr);
                 }
 
                 if (core.options.mode === "leader") {
