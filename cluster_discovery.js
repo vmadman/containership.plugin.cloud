@@ -33,6 +33,8 @@ module.exports = {
                 containership_cloud.get_configuration(config, function(err, response) {
                     if(err) {
                         return callback(err);
+                    } else if(!cloud[response.general.provider]) {
+                        return callback(new Error("Provider does not exist!"));
                     }
 
                     return callback(null, cloud[response.general.provider].parse(response));
@@ -45,7 +47,8 @@ module.exports = {
 
             get_configuration: function(config, fn){
                 var options = {
-                    url: ["https://api.containership.io", "v2", "organizations", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
+                    baseUrl: process.env.CONTAINERSHIP_CLOUD_ENV === "development" ? "https://stage-api.containership.io" : "https://api.containership.io";
+                    url: ["", "v2", "organizations", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
                     method: "GET",
                     timeout: 10000,
                     headers: {
@@ -169,6 +172,12 @@ module.exports = {
             }
 
         }
+
+        cloud.amazon_web_services = cloud.aws;
+        cloud.digital_ocean = cloud.do;
+        cloud.joyent = cloud.joy;
+        cloud.packet = cloud.pkt;
+        cloud.rackspace = cloud.rsp;
     }
 
 }
