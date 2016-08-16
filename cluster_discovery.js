@@ -47,7 +47,7 @@ module.exports = {
 
             get_configuration: function(config, fn){
                 var options = {
-                    baseUrl: process.env.CONTAINERSHIP_CLOUD_ENV === "development" ? "https://stage-api.containership.io" : "https://api.containership.io";
+                    baseUrl: process.env.CONTAINERSHIP_CLOUD_ENV === "development" ? "https://stage-api.containership.io" : "https://api.containership.io",
                     url: ["", "v2", "organizations", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
                     method: "GET",
                     timeout: 10000,
