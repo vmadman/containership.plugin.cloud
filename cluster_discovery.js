@@ -1,14 +1,15 @@
-var fs = require("fs");
-var _ = require("lodash");
-var async = require("async");
-var request = require("request");
+'use strict';
+
+const _ = require('lodash');
+const fs = require('fs');
+const request = require('request');
 
 module.exports = {
 
     discover: function(callback) {
-        var config = {};
+        let config = {};
 
-        fs.readFile([process.env.HOME, ".containership", "cloud.json"].join("/"), function(err, content) {
+        fs.readFile([process.env.HOME, '.containership', 'cloud.json'].join('/'), function(err, content) {
             if (err) {
                 return callback(err);
             }
@@ -19,7 +20,7 @@ module.exports = {
                 return callback(err);
             }
 
-            fs.readFile(["", "opt", "containership", "cluster_id"].join("/"), function(err, content) {
+            fs.readFile(['', 'opt', 'containership', 'cluster_id'].join('/'), function(err, content) {
                 if(err) {
                     return callback(err);
                 }
@@ -34,7 +35,7 @@ module.exports = {
                     if(err) {
                         return callback(err);
                     } else if(!cloud[response.general.provider]) {
-                        return callback(new Error("Provider does not exist!"));
+                        return callback(new Error('Provider does not exist!'));
                     }
 
                     return callback(null, cloud[response.general.provider].parse(response));
@@ -43,75 +44,80 @@ module.exports = {
 
         });
 
-        var containership_cloud = {
+        let containership_cloud = {
 
-            get_configuration: function(config, fn){
-                var options = {
-                    baseUrl: process.env.CONTAINERSHIP_CLOUD_ENV === "development" ? "https://stage-api.containership.io" : "https://api.containership.io",
-                    url: ["", "v2", "organizations", config.organization, "clusters", config.cluster_id, "configuration"].join("/"),
-                    method: "GET",
+            get_configuration: function(config, fn) {
+                let options = {
+                    baseUrl: process.env.CONTAINERSHIP_CLOUD_ENV === 'development' ? 'https://stage-api.containership.io' : 'https://api.containership.io',
+                    url: ['', 'v2', 'organizations', config.organization, 'clusters', config.cluster_id, 'configuration'].join('/'),
+                    method: 'GET',
                     timeout: 10000,
                     headers: {
-                        Authorization: ["Bearer", config.api_key].join(" ")
+                        Authorization: ['Bearer', config.api_key].join(' ')
                     },
                     json: true
-                }
+                };
 
-                request(options, function(err, response){
-                    if(err)
+                request(options, function(err, response) {
+                    if(err) {
                         return fn(err);
-                    else if(response.statusCode != 200)
+                    } else if(response.statusCode != 200) {
                         return fn(new Error(response.body));
-                    else
+                    } else {
                         return fn(null, response.body);
+                    }
                 });
             }
 
-        }
+        };
 
-        var cloud = {
+        let cloud = {
 
             aws: {
-                parse: function(configuration){
-                    var ip_addresses = _.flatten([
-                        _.pluck(configuration.leaders.instances, "PrivateIpAddress"),
-                        _.pluck(configuration.followers.instances, "PrivateIpAddress")
+                parse: function(configuration) {
+                    let ip_addresses = _.flatten([
+                        _.pluck(configuration.leaders.instances, 'PrivateIpAddress'),
+                        _.pluck(configuration.followers.instances, 'PrivateIpAddress')
                     ]);
 
-                    return _.map(ip_addresses, function(ip_address){
-                        ip_address = [ip_address, "32"].join("/");
+                    return _.map(ip_addresses, function(ip_address) {
+                        ip_address = [ip_address, '32'].join('/');
                         return ip_address;
                     });
                 }
             },
 
             do: {
-                parse: function(configuration){
-                    var ip_addresses = _.flatten([
-                        _.map(configuration.leaders.instances, function(instance){
-                            if(_.isNull(instance))
+                parse: function(configuration) {
+                    let ip_addresses = _.flatten([
+                        _.map(configuration.leaders.instances, function(instance) {
+                            if(_.isNull(instance)) {
                                 return;
+                            }
 
-                            var ip_address = null;
-                            _.each(instance.networks.v4, function(network){
-                                if(network.type == "private")
+                            let ip_address = null;
+                            _.each(instance.networks.v4, function(network) {
+                                if(network.type == 'private') {
                                     ip_address = network.ip_address;
+                                }
                             });
 
-                            ip_address = [ip_address, "32"].join("/");
+                            ip_address = [ip_address, '32'].join('/');
                             return ip_address;
                         }),
-                        _.map(configuration.followers.instances, function(instance){
-                            if(_.isNull(instance))
+                        _.map(configuration.followers.instances, function(instance) {
+                            if(_.isNull(instance)) {
                                 return;
+                            }
 
-                            var ip_address = null;
-                            _.each(instance.networks.v4, function(network){
-                                if(network.type == "private")
+                            let ip_address = null;
+                            _.each(instance.networks.v4, function(network) {
+                                if(network.type == 'private') {
                                     ip_address = network.ip_address;
+                                }
                             });
 
-                            ip_address = [ip_address, "32"].join("/");
+                            ip_address = [ip_address, '32'].join('/');
                             return ip_address;
                         })
                     ]);
@@ -121,16 +127,16 @@ module.exports = {
             },
 
             joy: {
-                parse: function(configuration){
+                parse: function(configuration) {
                     return _.flatten([
-                        _.map(configuration.leaders.instances, function(instance){
-                            var ip_address = _.without(instance.ips, instance.primaryIp);
-                            ip_address = [ip_address, "32"].join("/");
+                        _.map(configuration.leaders.instances, function(instance) {
+                            let ip_address = _.without(instance.ips, instance.primaryIp);
+                            ip_address = [ip_address, '32'].join('/');
                             return ip_address;
                         }),
-                        _.map(configuration.followers.instances, function(instance){
-                            var ip_address = _.without(instance.ips, instance.primaryIp);
-                            ip_address = [ip_address, "32"].join("/");
+                        _.map(configuration.followers.instances, function(instance) {
+                            let ip_address = _.without(instance.ips, instance.primaryIp);
+                            ip_address = [ip_address, '32'].join('/');
                             return ip_address;
                         })
                     ]);
@@ -138,20 +144,20 @@ module.exports = {
             },
 
             pkt: {
-                parse: function(configuration){
+                parse: function(configuration) {
                     return _.flatten([
-                        _.map(configuration.leaders.instances, function(instance){
-                            var ip_address = _.find(instance.ip_addresses, function(ip){
+                        _.map(configuration.leaders.instances, function(instance) {
+                            let ip_address = _.find(instance.ip_addresses, function(ip) {
                                 return !ip.public;
                             });
-                            ip_address = [ip_address.address, "32"].join("/");
+                            ip_address = [ip_address.address, '32'].join('/');
                             return ip_address;
                         }),
-                        _.map(configuration.followers.instances, function(instance){
-                            var ip_address = _.find(instance.ip_addresses, function(ip){
+                        _.map(configuration.followers.instances, function(instance) {
+                            let ip_address = _.find(instance.ip_addresses, function(ip) {
                                 return !ip.public;
                             });
-                            ip_address = [ip_address.address, "32"].join("/");
+                            ip_address = [ip_address.address, '32'].join('/');
                             return ip_address;
                         })
                     ]);
@@ -159,13 +165,13 @@ module.exports = {
             },
 
             rsp: {
-                parse: function(configuration){
+                parse: function(configuration) {
                     return _.flatten([
-                        _.map(configuration.leaders.instances, function(instance){
-                            return [_.first(instance.addresses.private).addr, "32"].join("/");
+                        _.map(configuration.leaders.instances, function(instance) {
+                            return [_.first(instance.addresses.private).addr, '32'].join('/');
                         }),
-                        _.map(configuration.followers.instances, function(instance){
-                            return [_.first(instance.addresses.private).addr, "32"].join("/");
+                        _.map(configuration.followers.instances, function(instance) {
+                            return [_.first(instance.addresses.private).addr, '32'].join('/');
                         })
                     ]);
                 }
@@ -173,17 +179,18 @@ module.exports = {
 
             google_cloud: {
                 parse: function(configuration) {
-                    var ips = _.map(_.flatten([configuration.leaders.instances, configuration.followers.instances]), function(instance) {
+                    let ips = _.map(_.flatten([configuration.leaders.instances, configuration.followers.instances]), function(instance) {
                         if(instance.metadata && instance.metadata.networkInterfaces) {
-                            var nics = _.indexBy(instance.metadata.networkInterfaces, "name");
-                            return nics.nic0 && [nics.nic0.networkIP, "32"].join("/");
+                            let nics = _.indexBy(instance.metadata.networkInterfaces, 'name');
+                            return nics.nic0 && `${nics.nic0.networkIP}/32`;
                         }
                     });
 
                     return _.compact(ips);
                 }
             }
-        }
+        };
+
 
         cloud.amazon_web_services = cloud.aws;
         cloud.digital_ocean = cloud.do;
@@ -192,4 +199,4 @@ module.exports = {
         cloud.rackspace = cloud.rsp;
     }
 
-}
+};

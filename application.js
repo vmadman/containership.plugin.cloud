@@ -1,21 +1,23 @@
-var _ = require("lodash");
-var ContainershipPlugin = require("containership.plugin");
-var cli = require([__dirname, "lib", "cli"].join("/"));
-var cluster_discovery = require([__dirname, "cluster_discovery"].join("/"));
-var leader = require([__dirname, "lib", "leader"].join("/"));
-var follower = require([__dirname, "lib", "follower"].join("/"));
-var nomnom = require("nomnom");
-var url = require("url");
+'use strict';
+
+const cli = require(`${__dirname}/lib/cli`);
+const cluster_discovery = require(`${__dirname}/cluster_discovery`);
+const follower = require(`${__dirname}/lib/follower`);
+const leader = require(`${__dirname}/lib/leader`);
+
+const _ = require('lodash');
+const ContainershipPlugin = require('containership.plugin');
+const url = require('url');
 
 module.exports = new ContainershipPlugin({
-    type: ["core", "cli"],
-    name: "cloud",
+    type: ['core', 'cli'],
+    name: 'cloud',
 
-    initialize: function(core){
-        if(_.has(core, "logger")){
-            core.logger.register("containership-cloud");
+    initialize: function(core) {
+        if(_.has(core, 'logger')) {
+            core.logger.register('containership-cloud');
 
-            var config = this.get_config("core");
+            let config = this.get_config('core');
 
             cluster_discovery.discover(function(err, cidr) {
                 if(!err) {
@@ -23,15 +25,14 @@ module.exports = new ContainershipPlugin({
                     core.cluster.legiond.actions.discover_peers(cidr);
                 }
 
-                if (core.options.mode === "leader") {
+                if (core.options.mode === 'leader') {
                     leader.initialize(core, config);
                 } else {
                     follower.initialize(core, config);
                 }
             });
-        }
-        else{
-            var commands = _.map(cli, function(configuration, command){
+        } else {
+            let commands = _.map(cli, function(configuration, command) {
                 configuration.name = command;
                 return configuration;
             });
@@ -39,50 +40,51 @@ module.exports = new ContainershipPlugin({
             return {
                 commands: commands,
                 middleware: [
-                    function(options, fn){
-                        if(options.url.indexOf("https://api.containership.io") == 0){
-                            var original_url = options.url;
+                    function(options, fn) {
+                        if(options.url.indexOf('https://api.containership.io') == 0) {
+                            let original_url = options.url;
                             options.url = [
-                                "https://api.containership.io",
-                                "v2",
-                                "organizations",
-                                options.headers["x-containership-cloud-organization"],
-                                "clusters",
-                                options.headers["x-containership-cloud-cluster"],
-                                "proxy"
-                            ].join("/");
+                                'https://api.containership.io',
+                                'v2',
+                                'organizations',
+                                options.headers['x-containership-cloud-organization'],
+                                'clusters',
+                                options.headers['x-containership-cloud-cluster'],
+                                'proxy'
+                            ].join('/');
 
-                            var original_method = options.method;
-                            options.method = "POST";
+                            let original_method = options.method;
+                            options.method = 'POST';
 
                             options.headers = _.pick(options.headers, [
-                                "authorization"
+                                'authorization'
                             ]);
 
-                            var original_qs = options.qs;
+                            let original_qs = options.qs;
                             options.qs = {};
 
-                            var original_body = options.json;
+                            let original_body = options.json;
 
-                            var proxy_url = url.parse(original_url).path.split("/");
+                            let proxy_url = url.parse(original_url).path.split('/');
                             proxy_url.splice(1, 1);
 
                             options.json = {
-                                url: proxy_url.join("/"),
+                                url: proxy_url.join('/'),
                                 qs: original_qs,
-                                method: original_method,
-                            }
+                                method: original_method
+                            };
 
-                            if((original_method == "POST" || original_method == "PUT") && !_.isUndefined(original_body))
+                            if((original_method == 'POST' || original_method == 'PUT') && !_.isUndefined(original_body)) {
                                 options.json.data = original_body;
+                            }
                         }
 
                         return fn();
                     }
                 ]
-            }
+            };
         }
     },
 
-    reload: function(){}
+    reload: function() {}
 });
