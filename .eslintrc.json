@@ -4,9 +4,6 @@
         "node": true
     },
     "extends": "eslint:recommended",
-    "parserOptions": {
-        "sourceType": "module"
-    },
     "rules": {
         "indent": [
             "error",
@@ -49,6 +46,7 @@
         "no-redeclare": 2,
         "no-regex-spaces": 2,
         "no-octal-escape": 2,
+        "strict": [2, "global"],
         "space-before-function-paren": [2, "never"],
         "semi": [
             "error",

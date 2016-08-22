@@ -4,7 +4,8 @@
   "description": "Offical plugin for interacting with ContainerShip Cloud",
   "main": "application.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint ."
   },
   "author": "ContainerShip Developers <developers@containership.io>",
   "license": "GPL-3.0",
@@ -35,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/containership/containership.plugin.cloud/issues"
   },
-  "homepage": "https://github.com/containership/containership.plugin.cloud"
+  "homepage": "https://github.com/containership/containership.plugin.cloud",
+  "devDependencies": {
+    "eslint": "^3.3.1"
+  }
 }
