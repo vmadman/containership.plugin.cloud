@@ -200,6 +200,14 @@ module.exports = {
 
                     return _.compact(ips);
                 }
+            },
+
+            oracle_cloud: {
+                parse: function(configuration) {
+                    return _.map(_.flatten([configuration.leaders.instances, configuration.followers.instances]), function(instance) {
+                        return `${instance.ip}/32`;
+                    });
+                }
             }
         };
 
