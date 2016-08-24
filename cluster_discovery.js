@@ -188,6 +188,18 @@ module.exports = {
 
                     return _.compact(ips);
                 }
+            },
+
+            linode: {
+                parse: function(configuration) {
+                    let ips = _.map(_.flatten([configuration.leaders.instances, configuration.followers.instances]), function(instance) {
+                        if(instance.IP && instance.IP.private && instance.IP.private.IPADDRESS) {
+                            return `${instance.IP.private.IPADDRESS}/32`;
+                        }
+                    });
+
+                    return _.compact(ips);
+                }
             }
         };
 
