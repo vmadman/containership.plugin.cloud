@@ -23,22 +23,37 @@ module.exports = {
         nodes[current_node.id] = current_node;
 
         _.each(res.stash.body, function(application/*, application_name */) {
-            let containers = _.filter(application.containers, function(container) {
-                return !_.isEmpty(container.volumes);
+
+            const volumes = _.filter(application.volumes, (volume) => {
+                return volume.host === undefined;
             });
 
-            _.each(containers, function(container) {
-                if(nodes[container.host]) {
-                    core.loggers['containership-cloud'].log('verbose', ['Requesting volume backup for', container.id].join(' '));
-                    core.cluster.legiond.send({
-                        event: 'containership-cloud.backup',
-                        data: {
-                            path: _.first(container.volumes).host,
-                            container_id: container.id,
-                            backup_id: req.query.CSC_BACKUP_ID
-                        }
-                    }, nodes[container.host]);
-                }
+            if(_.isEmpty(volumes)) {
+                return;
+            }
+
+            _.each(application.containers, (container) => {
+                _.each(container.volumes, (volume) => {
+                    const volume_to_backup = _.find(volumes, (volume_without_host) => {
+                        return volume_without_host.container === volume.container;
+                    });
+
+                    if(!volume_to_backup) {
+                        return;
+                    }
+
+                    if(nodes[container.host]) {
+                        core.loggers['containership-cloud'].log('verbose', `Requesting volume backup for ${volume.host} in container ${container.id}`);
+                        core.cluster.legiond.send({
+                            event: 'containership-cloud.backup',
+                            data: {
+                                path: volume.host,
+                                container_id: container.id,
+                                backup_id: req.query.CSC_BACKUP_ID
+                            }
+                        }, nodes[container.host]);
+                    }
+                });
             });
         });
 
