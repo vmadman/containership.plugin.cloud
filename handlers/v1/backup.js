@@ -18,6 +18,11 @@ module.exports = {
             return core.api.server.middleware.handle_response(req, res, next);
         }
 
+        if(req.query.CSC_PERSIST_DATA === 'false') {
+            res.stash.code = 200;
+            return next();
+        }
+
         const current_node = core.cluster.legiond.get_attributes();
         const nodes = _.indexBy(core.cluster.legiond.get_peers(), 'id');
         nodes[current_node.id] = current_node;
