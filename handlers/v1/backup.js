@@ -49,7 +49,7 @@ module.exports = {
 
                     if(nodes[container.host]) {
                         core.loggers['containership-cloud'].log('verbose', `Requesting volume backup for ${volume.host} in container ${container.id}`);
-                        const volume_id = this.get_volume_id(container.host);
+                        const volume_id = module.exports.get_volume_id(container.host);
                         core.cluster.legiond.send({
                             event: 'containership-cloud.backup',
                             data: {
