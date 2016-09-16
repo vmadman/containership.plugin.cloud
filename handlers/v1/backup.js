@@ -49,7 +49,7 @@ module.exports = {
 
                     if(nodes[container.host]) {
                         core.loggers['containership-cloud'].log('verbose', `Requesting volume backup for ${volume.host} in container ${container.id}`);
-                        const volume_id = module.exports.get_volume_id(container.host);
+                        const volume_id = module.exports.get_volume_id(volume.host);
                         core.cluster.legiond.send({
                             event: 'containership-cloud.backup',
                             data: {
@@ -71,6 +71,6 @@ module.exports = {
     get_volume_id(host_path) {
         //gets the last part of the host path which is the volume_id
         const parts = host_path.split('/');
-        return parts[parts.length -1];
+        return parts[parts.length - 1];
     }
 };
