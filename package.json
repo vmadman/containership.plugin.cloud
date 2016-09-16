@@ -1,6 +1,6 @@
 {
   "name": "containership.plugin.cloud",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Offical plugin for interacting with ContainerShip Cloud",
   "main": "application.js",
   "scripts": {
