@@ -64,6 +64,7 @@ module.exports = {
             });
         });
 
+        res.stash.code = 200;
         return next();
     },
 
