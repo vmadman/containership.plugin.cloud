@@ -23,9 +23,9 @@ module.exports = {
             if(err) {
                 return callback(err);
             } else if(response.statusCode !== 200) {
-                return fn(new Error(response.body));
+                return callback(new Error(response.body));
             } else {
-                return fn(null, response.body);
+                return callback(null, response.body);
             }
         });
     }
