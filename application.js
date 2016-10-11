@@ -20,13 +20,13 @@ module.exports = new ContainershipPlugin({
 
             let config = this.get_config('core');
 
-            cluster_discovery.discover(function(err, cidr) {
+            cluster_discovery.discover(core.cluster_id || core.options.cluster_id, config, function(err, cidr) {
                 if(!err) {
                     core.cluster.legiond.options.network.cidr = cidr;
                     core.cluster.legiond.actions.discover_peers(cidr);
                 }
 
-                if (core.options.mode === 'leader') {
+                if(core.options.mode === 'leader') {
                     leader.initialize(core, config);
                 } else {
                     follower.initialize(core, config);
