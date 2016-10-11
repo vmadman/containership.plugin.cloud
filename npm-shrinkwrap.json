@@ -1,6 +1,6 @@
 {
   "name": "containership.plugin.cloud",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "dependencies": {
     "acorn": {
       "version": "3.3.0",
